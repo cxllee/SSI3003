@@ -31,7 +31,6 @@ W10 %>%
 Sexage10 <- W10 %>%
   select(pidp, j_sex, j_dvage)
 
-? select
 
 # the alternatives in base R are not as pretty
 

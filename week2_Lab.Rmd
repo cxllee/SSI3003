@@ -1,4 +1,3 @@
-
 title: "Data Analysis in Social Science  (18 January)"
 output:
   html_document:
