@@ -1,10 +1,11 @@
+---
 title: "Data Analysis in Social Science  (18 January)"
 output:
   html_document:
     df_print: paged
   word_document: default
   pdf_document: default
-
+---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
