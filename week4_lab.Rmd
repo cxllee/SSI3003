@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```{r}
 library(tidyverse)
-dfStable <- read_tsv("UKDA-6614-tab/tab/ukhls_wx/xwavedat.tab")
+dfStable <- read_tsv("/Users/chelsealee/Desktop/SSI3003/UndSoc/tab/ukhls_wx/xwavedat.tab")
 ```
 
 This is a cross-wave data file with stable characteristics of individuals. See the codebook at https://www.understandingsociety.ac.uk/documentation/mainstage/dataset-documentation/search/datafile/xwavedat.
@@ -19,37 +19,71 @@ Exercises.
 
 1. Select the variables for: sex (derived), date of birth (doby_dv), ethnic group (racel_dv). Also keep the cross-wave identifier (pidp) and the sample origin variable (memorig).
 
-    ```{r}
-    ```
+```{r}
+dfStable1 <- dfStable%>%
+      select(sex_dv, doby_dv, racel_dv, pidp, memorig)
+```
+
 
 2. Filter the data to keep:
         a) men only.
         b) people born before 1950 and after 1975.
         c) men of Pakistani origin born in 1958 or 1982. 
+```{r}
+dfStable1%>%
+  filter(sex_dv==1)
 
+dfStable1%>%
+  filter(doby_dv>1950 | doby_dv>1975)
 
-    ```{r}
-    ```
+dfStable1%>%
+  filter(sex_dv==1 & (doby_dv==1958|doby_dv==1982) & racel_dv==10)
+```
+
 
 3. Recode birth year into cohorts (a new variable): the G.I. Generation (born before 1924), Silent Generation (1925-42), Baby Boomers (1943-65), Generation X (1966-1980), Millenials (1981-99), Generation Z (2000-). (The years are approximate.)
 
-    ```{r}
-    ```
+```{r}
+dfStable1 <- dfStable1%>%
+  mutate(cohort = case_when(
+    doby_dv<1924 ~ "G.I. Generation",
+    between(doby_dv, 1925, 1942) ~ "Baby Boomer",
+    between(doby_dv, 1966, 1980) ~ "Generation X",
+    between(doby_dv, 1981,1999) ~ "Millenials", #doby_dv %in% 1981:1999
+    doby_dv>2000 ~ "Generation Z"))
+  
+
+```
+
 
 4. Recode ethnicity into the following groups: white British, Other White, Indian, Pakistani, other. (This classification doesn't make much sense, but we're doing this as an exercise).
 
-
-    ```{r}
-        
-    ```
+```{r}
+dfStable1 <- dfStable1 %>%
+  mutate(race=recode(racel_dv,
+                     "1" = "White British",
+                     "2" = "Other White",
+                     "3" = "Other White",
+                     "4" = "Other White",
+                     "9" = "Indian",
+                     "10" = "Pakistani",
+                     .default = "Other"
+  ))
+```
 
 
 5. Count the number of people belonging to different ethnic groups (and produce percentages). 
-
-    ```{r}
-    ```
+```{r}
+dfStable1 %>%
+  count(race)%>%
+  mutate(perc = n / sum(n)*100)
+```
 
 6. Summarise the proportion of white British by generation.
+```{r}
+dfStable1 %>%
+  filter(race=="White British")%>%
+  group_by(cohort)
+  
+```
 
-    ```{r}
-    ```
