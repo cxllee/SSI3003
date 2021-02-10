@@ -1,4 +1,4 @@
-# Week 5. Tidy data (reshaping)
+# Week 5. Tidy data (Reshaping Data)
 # AB
 # 8 Feb 2021
 
