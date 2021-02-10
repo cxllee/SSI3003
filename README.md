@@ -1,3 +1,3 @@
 # SSI3003
 
-hello this is a trial to see if my github works
+This repository is for Data Analysis in Social Science III and will contain work that I have done for the module.
