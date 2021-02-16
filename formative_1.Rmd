@@ -15,7 +15,7 @@ In this assignment you will work with the individual level data (the indresp fil
 
 ```{r}
 library(tidyverse)
-Data <- ...
+Data <- read_tsv("/Users/chelsealee/Desktop/SSI3003/UndSoc/tab/ukhls_w8/h_indresp.tab")
 ```
 
 Now you have got your data frame stored as Data. 
@@ -30,7 +30,7 @@ Complete the code below to select those variables from the data frame and save t
 
 ```{r}
 Data <- Data %>%
-        select(...)
+        select(pidp, h_eumem, h_sex_dv, h_age_dv, h_memorig)
 ```
 
 ## Filter observations (10 points)
@@ -39,7 +39,7 @@ To make nationally representative estimates from the Understanding Society data 
 
 ```{r}
 Data <- Data %>%
-        filter(...)
+        filter(h_memorig==1)
 ```
 
 ## Recode data (20 points)
@@ -64,12 +64,21 @@ In all cases, we want to create new variables.
 
 ```{r}
 Data <- Data %>%
-        mutate(EU = ...
-      
-        ) %>%
-        mutate(sex = ...) %>%
-        mutate(agegr = ...
-        )
+        mutate(EU = recode(h_eumem,
+                           "1" = "Remain", 
+                           "2" = "Leave",
+                           .default = "Don't Know"))%>%
+        mutate(sex = recode(h_sex_dv,
+                            "1" = "male",
+                            "2" = "female",
+                            .default = "NA"))%>%
+        mutate(agegr = case_when(
+                            between(h_age_dv, 16, 25) ~ "16-25",
+                            between(h_age_dv, 26, 40) ~ "26-40",
+                            between(h_age_dv, 41, 55) ~ "41-55",
+                            between(h_age_dv, 56, 70) ~ "56-70",
+                            h_age_dv > 70 ~ "over 70"
+                              ))
 ```
 
 ## Summarise data (20 points)
@@ -78,11 +87,13 @@ Let us **dplyr** to calculate how many people in the sample supported Remain and
 
 ```{r}
 Data %>%
-        ...
-        
+  count(EU)%>%
+  mutate(percentage = n / sum(n) * 100)
 ```
 
 Write a couple of sentences with the interpretation of this result. How this compares with the result of the 2016 referendum? Why?
+
+- Compared to the results of the 2016 referendum where 53% voters voted to leave the EU while 47% voted to remain, the results from the above analysis show that most UK nationals then preferred for the UK to remain in the EU rather than the exit the organisation. The difference in results could be explained by several factors. For one, the result of the 2016 referendum showed that more voters preferred to leave than remain in the EU compared to that of our analysis due to the rise of parties such as UKIP, which used immigration as a defining issue. 
 
 ## Summarise data by sex and age (30 points)
 
@@ -90,12 +101,22 @@ Now let us look at the support for Leave and Remain by sex and age. Use your new
 
 
 ```{r}
+Data %>% 
+  filter(EU=="Remain"| EU=="Leave", sex == "male" | sex == "female")%>%
+  group_by(sex)%>%
+  count(EU)%>%
+  mutate(percentage = n / sum(n) * 100)
+
 Data %>%
-        ...
-        
+  filter(EU=="Remain"| EU=="Leave")%>%
+  group_by(agegr)%>%
+  count(EU)%>%
+  mutate(percentage = n / sum(n) * 100)
 ```
 
 Write a couple of sentences interpreting your results.
+
+- First of all, the results show that more females voted to remain in comparison to males, with 57% of females voting to remain while only 51% of males voted the same. Secondly, the results show that those who are over 70 years old are more likely to vote to leave, with 58% of people from the group doing so. It seems that older voters (those over 56) tend to vote for the UK to leave the EU, while the majority of younger voters (those under 56), especially those from teh 16-25 age group prefer for the UK to remain in the EU. 
 
 
 **Part II.**
