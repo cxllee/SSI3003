@@ -37,11 +37,11 @@ df %>%
 
 # Open the first three waves of data only.
 
-w1 <- vroom("UKDA-6614-tab/tab/ukhls_w1/a_indresp.tab",
+w1 <- vroom("/Users/chelsealee/Desktop/SSI3003/UndSoc/tab/ukhls_w1/a_indresp.tab",
             col_select = c(pidp, a_sex_dv, a_age_dv, a_fimnnet_dv))
-w2 <- vroom("UKDA-6614-tab/tab/ukhls_w2/b_indresp.tab",
+w2 <- vroom("/Users/chelsealee/Desktop/SSI3003/UndSoc/tab/ukhls_w2/b_indresp.tab",
             col_select = c(pidp, b_sex_dv, b_age_dv, b_fimnnet_dv))
-w3 <- vroom("UKDA-6614-tab/tab/ukhls_w3/c_indresp.tab",
+w3 <- vroom("/Users/chelsealee/Desktop/SSI3003/UndSoc/tab/ukhls_w3/c_indresp.tab",
             col_select = c(pidp, c_sex_dv, c_age_dv, c_fimnnet_dv))
 
 # Join the data
