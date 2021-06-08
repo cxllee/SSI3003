@@ -77,7 +77,7 @@ Data <- Data %>%
                             between(h_age_dv, 26, 40) ~ "26-40",
                             between(h_age_dv, 41, 55) ~ "41-55",
                             between(h_age_dv, 56, 70) ~ "56-70",
-                            h_age_dv > 70 ~ "over 70"
+                            h_age_dv > 70 ~ NA
                               ))
 ```
 
@@ -128,9 +128,9 @@ We will work with three different tables: household roster from wave 8 (*h_egoal
 
 ```{r}
 # You need to complete the paths to these files on your computer.
-Egoalt8 <- read_tsv("...h_egoalt.tab")
-Stable <- read_tsv("...xwavedat.tab")
-Hh8 <- read_tsv("...h_hhresp.tab")
+Egoalt8 <- read_tsv("/Users/chelsealee/Desktop/SSI3003/UndSoc/tab/ukhls_w8/h_egoalt.tab")
+Stable <- read_tsv("/Users/chelsealee/Desktop/SSI3003/UndSoc/tab/ukhls_wx/xwavedat.tab")
+Hh8 <- read_tsv("/Users/chelsealee/Desktop/SSI3003/UndSoc/tab/ukhls_w8/h_hhresp.tab")
 ```
 
 ## Filter household roster data (10 points)
@@ -141,9 +141,11 @@ First we want to select only pairs of individuals who are husbands and wives or 
 
 ```{r}
 Partners8 <- Egoalt8 %>%
-        filter(...) %>%
-        select(...)
+        filter(h_relationship==1 & h_relationship==2) %>%
+        select(pidp,apidp, h_hidp, h_relationship_dv, h_sex, h_asex)
+        
 ```
+
 
 Each couple now appears in the data twice: 1) with one partner as ego and the other as alter, 2) the other way round. Now we will only focus on heterosexual couples, and keep one observation per couple with women as egos and men as their alters.
 
@@ -161,7 +163,7 @@ In this assignment we will explore ethnic endogamy, i.e. marriages and partnersh
 
 ```{r}
 Stable2 <- Stable %>%
-        select(...)
+        select(pidp, racel_dv)
 ```
 
 Let's code missing values on ethnicity (-9) as NA.
@@ -175,7 +177,12 @@ Now let us recode the variable on ethnicity into a new binary variable with the 
 
 ```{r}
 Stable2 <- Stable2 %>%
-        mutate(race = ...)
+        mutate(race = recode(racel_dv,
+                            "1" = "White",
+                            "2" = "White",
+                            "3" = "White",
+                            "4" = "White",
+                            .default = "non-White"))
 ```
 
 ## Join data (30 points)
@@ -184,7 +191,7 @@ Now we want to join data from the household roster (*Hetero8*) and the data tabl
 
 ```{r}
 JoinedEthn <- Hetero8 %>%
-        ...
+        left_join(Hetero8,Stable2)
 ```
 
 Let us rename the variables for ethnicity to clearly indicate that they refer to egos.
